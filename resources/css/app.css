@@ -3,6 +3,21 @@
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-dangrek: 'Dangrek', cursive;
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+#map .leaflet-control-attribution {
+    @apply rounded-md border-0 bg-white/70 px-2 py-0.5 text-[11px] text-gray-600 opacity-80 shadow-sm backdrop-blur transition-opacity hover:opacity-100 dark:bg-gray-800/70 dark:text-gray-300;
+}
+
+#map .leaflet-control-attribution a {
+    @apply text-gray-700 dark:text-gray-200;
 }
