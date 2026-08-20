@@ -50,7 +50,7 @@ This project is a technical test submission demonstrating clean architecture, mo
 ### 1. Clone the repository
 
 ```
-git clone <your-repo-url>
+git clone https://github.com/chant9/weather-app.git
 cd weather-app
 ```
 
@@ -130,13 +130,7 @@ Weather data is fetched via three service classes (`app/Services/`), each respon
 - **ForecastService** — `/data/2.5/forecast` (3-hourly forecast, bucketed into an hourly window and daily min/max summaries)
 - **AirQualityService** — `/data/2.5/air_pollution` (AQI + pollutant components)
 
-Each service caches the *raw API response* (not the constructed object — see note below) for 10 minutes via the `Cache` facade, and retries failed requests automatically (`Http::retry`, configurable in `config/weather.php`). Responses are mapped into typed, readonly data-transfer objects (`app/DataTransferObjects/`) so Livewire components and Blade views work with typed properties rather than raw arrays.
-
-> Caching is deliberately applied to the raw array response rather than the constructed DTO. PHP's readonly value objects (which hold `Carbon` instances) don't round-trip reliably through PHP's native object serialization used by file/database cache drivers — caching plain arrays and reconstructing the DTO on every read sidesteps that entirely.
-
-### Resilience
-
-`WeatherPanel::open()` fetches all three endpoints independently — each is wrapped in its own try/catch, so a failure in one (e.g. the forecast endpoint being down) doesn't prevent the other two from loading; the panel only shows a full error state if all three fail. Weather fetches are also rate-limited per session (30/minute) to protect the API key from being burned through accidental or abusive rapid clicking.
+Each service caches the raw API response for 10 minutes via the `Cache` facade, and retries failed requests automatically (`Http::retry`, configurable in `config/weather.php`). Responses are mapped into typed, readonly data-transfer objects (`app/DataTransferObjects/`) so Livewire components and Blade views work with typed properties rather than raw arrays. `WeatherPanel::open()` fetches all three endpoints independently, so a failure in one doesn't prevent the other two from loading, and weather fetches are rate-limited per session (30/minute) to protect the API key from abuse.
 
 ## Testing
 
@@ -208,7 +202,4 @@ routes/
 
 config/
   weather.php
-
-PLAN.md
-README.md
 ```
